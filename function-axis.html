@@ -1,0 +1,124 @@
+<form>
+    <input class="function" placeholder="Function">
+    <button>calculate</button>
+</form>
+
+<div class="axis">
+    <div class="x-line"></div>
+    <div class="y-line"></div>
+</div>
+
+<script>
+    const xLine = document.querySelector('xLine');
+
+    function drawNumbersX(line) {
+        for (let i = -10; i <= 10; i++) {
+            const number = document.createElement('span');
+            number.innerText = !i ? '' : i;
+            line.appendChild(number);
+        }
+    }
+
+    function drawNumbersY(line) {
+        for (let i = 10; i >= -10; i--) {
+            const number = document.createElement('span');
+            number.innerText = !i ? '' : i;
+            line.appendChild(number);
+        }
+    }
+
+    drawNumbersX(document.querySelector('.x-line'));
+    drawNumbersY(document.querySelector('.y-line'));
+
+
+    const form = document.querySelector('form');
+    const funcInput = document.querySelector('input.function');
+    const axis = document.querySelector('.axis');
+
+    let funcInputValue = '';
+
+    funcInput.onchange = (event) => { funcInputValue = event.target.value; }
+    form.onsubmit = (event) => {
+        event.preventDefault();
+
+        document.querySelectorAll('.pixel').forEach(item => item.remove());
+
+        const min = -50;
+        const max = 50;
+
+        for (let x = min; x <= max; x += .01) {
+            const y = eval(funcInputValue.replaceAll('x', `(${x})`));
+
+            if (!y) continue;
+
+            const pixel = document.createElement('div');
+            pixel.className = 'pixel';
+            pixel.style.left = `calc(50% + ${x * 25}px)`;
+            pixel.style.bottom = `calc(50% + ${y * 25}px)`;
+            axis.appendChild(pixel);
+        }
+    }
+</script>
+
+<style>
+    input {
+        margin-bottom: 40px; 
+    }
+    
+    .axis {
+        width: 500px;
+        height: 500px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .pixel {
+        width: 3px;
+        height: 3px;
+        background: red;
+        position: absolute;
+    }
+
+    .x-line {
+        width: 100%;
+        height: 1px;
+        top: 50%;
+        display: flex;
+        justify-content: space-between;
+        background: black;
+        transform: translateY(-50%);
+        position: absolute;
+    }
+
+    .x-line > span {
+        width: 12.5px;
+        z-index: 1;
+        padding-top: 5px;
+        color: blue;
+        text-shadow: 1px 1px black;
+        position: relative;
+        font-size: 12px;
+    }
+
+    .y-line {
+        width: 1px;
+        height: 100%;
+        left: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background: black;
+        transform: translateX(-50%);
+        position: absolute;
+    }
+
+    .y-line > span {
+        height: 12.5px;
+        z-index: 1;
+        padding-left: 5px;
+        color: blue;
+        text-shadow: 1px 1px black;
+        position: relative;
+        font-size: 12px;
+    }
+</style>
